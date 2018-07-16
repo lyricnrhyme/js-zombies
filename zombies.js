@@ -7,6 +7,9 @@
  * @param {string} name     The item's name.
  * @property {string} name
  */
+function Item(name) {
+  this.name = name;
+};
 
 
 /**
@@ -24,7 +27,11 @@
  * @param {number} damage   The weapon's damage.
  * @property {number} damage
  */
-
+function Weapon(name, damage) {
+  this.name = name;
+  this.damage = damage;
+}
+Weapon.prototype = Object.create(Item.prototype);
 
 /**
  * Weapon Extends Item Class
@@ -48,7 +55,11 @@
  * @param {number} energy     The energy the food provides.
  * @property {number} energy
  */
-
+function Food(name, energy) {
+  this.name = name;
+  this.energy = energy;
+}
+Food.prototype = Object.create(Item.prototype);
 
 /**
  * Food Extends Item Class
@@ -78,8 +89,131 @@
  * @property {method} getPack              Returns private variable `pack`.
  * @property {method} getMaxHealth         Returns private variable `maxHealth`.
  */
+function Player(name, health, strength, speed) {
+  this.name = name;
+  this.health = health;
+  this.strength = strength;
+  this.speed = speed;
+  this.isAlive = true;
+  this.equipped = false;
+  this._pack = [];
+  this._maxHealth = health;
+};
 
+Player.prototype.getPack = function() {
+  return this._pack;
+}
 
+Player.prototype.getMaxHealth = function() {
+  return this._maxHealth;
+}
+
+Player.prototype.takeItem = function(item) {
+  if (this._pack.length < 3) {
+    this._pack.push(item);
+    console.log("YES");
+    return true;
+  } else {
+    console.log("NO");
+    return false;
+  }
+}
+
+Player.prototype.discardItem = function(item) {
+  if (this._pack.includes(item)) {
+    const remove = this._pack.indexOf(item);
+    this._pack.splice(remove, 1);
+    console.log("YES");
+    return true;
+  } else {
+    console.log("NO");
+    return false;
+  }
+}
+
+Player.prototype.checkPack = function() {
+  console.log(this.getPack());
+  this.getPack();
+}
+
+Player.prototype.equip = function(itemToEquip) {
+  if (itemToEquip instanceof (Weapon) && this._pack.includes(itemToEquip)) {
+    if (this.equipped) {
+      this._pack.splice(this._pack.indexOf(itemToEquip), 1, this.equipped);
+      this.equipped = itemToEquip;
+    } else {
+      this._pack.splice(this._pack.indexOf(itemToEquip), 1);
+      this.equipped = itemToEquip;
+    }
+  }
+}
+
+Player.prototype.eat = function(itemToEat) {
+  if (itemToEat instanceof (Food) && this._pack.includes(itemToEat)) {
+    this._pack.splice(itemToEat, 1);
+    this.health += itemToEat.energy;
+    if (this.health > this._maxHealth) {
+      this.health = this._maxHealth;
+    }
+  }
+}
+
+Player.prototype.useItem = function(item) {
+  if (item instanceof (Weapon)) {
+    this.equip(item);
+  } else if (item instanceof (Food)) {
+    this.eat(item);
+  }
+}
+
+Player.prototype.equippedWith = function() {
+  if (this.equipped) {
+    console.log("YES");
+    return this.equipped.name;
+  } else {
+    console.log("NO");
+    return false;
+  }
+}
+
+function Zombie(health, strength, speed) {
+  this.health = health;
+  this.strength = strength;
+  this.speed = speed;
+  this.isAlive = true;
+};
+
+function FastZombie(health, strength, speed) {
+  this.health = health;
+  this.strength = strength;
+  this.speed = speed;
+  this.isAlive = true;
+}
+FastZombie.prototype = Object.create(Zombie.prototype);
+
+function StrongZombie(health, strength, speed) {
+  this.health = health;
+  this.strength = strength;
+  this.speed = speed;
+  this.isAlive = true;
+}
+StrongZombie.prototype = Object.create(Zombie.prototype);
+
+function RangedZombie(health, strength, speed) {
+  this.health = health;
+  this.strength = strength;
+  this.speed = speed;
+  this.isAlive = true;
+}
+RangedZombie.prototype = Object.create(Zombie.prototype);
+
+function ExplodingZombie(health, strength, speed) {
+  this.health = health;
+  this.strength = strength;
+  this.speed = speed;
+  this.isAlive = true;
+}
+ExplodingZombie.prototype = Object.create(Zombie.prototype);
 /**
  * Player Class Method => checkPack()
  * -----------------------------
